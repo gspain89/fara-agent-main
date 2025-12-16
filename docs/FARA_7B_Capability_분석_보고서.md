@@ -1,13 +1,19 @@
-# Fara-7B Agent 분석 리포트
+# FARA-7B Capability 분석 보고서 (Playwright CLI 기준)
+
+> **중요**: 이 문서는 **Playwright 기반 CLI 에이전트** 구현(간소화된 데모 버전)을 기준으로 작성되었습니다.
+>
+> **Magentic-UI 환경**에서는 FARA-7B의 전체 기능을 활용할 수 있으며,
+> 텍스트 읽기/요약, Multi-agent 협업, 세션 관리 등 추가 기능이 지원됩니다.
+> Magentic-UI 사용법은 [Magentic-UI 사용 가이드](./USAGE_GUIDE_MAGENTIC_UI.md)를 참조하세요.
 
 > 작성일: 2025-12-11
-> 목적: Fara-7B 웹 에이전트의 현재 capability, 제약사항, 확장 시 위험성 분석
+> 목적: Fara-7B 웹 에이전트의 현재 capability, 제약사항, 확장 시 위험성 분석 (Playwright CLI 구현 기준)
 
 ---
 
 ## 목차
 1. [Fara-7B 개요](#1-fara-7b-개요)
-2. [현재 구현 분석](#2-현재-구현-분석)
+2. [현재 Playwright CLI 구현 분석](#2-현재-playwright-cli-구현-분석)
 3. [지원되는 Actions (공식)](#3-지원되는-actions-공식)
 4. [Capability 제약사항](#4-capability-제약사항)
 5. [확장 시도 시 문제점](#5-확장-시도-시-문제점)
@@ -17,7 +23,7 @@
 
 ## 1. Fara-7B 개요
 
-### ⚠️ 중요: 설계 vs 현재 구현
+### ⚠️ 중요: 설계 vs Playwright CLI 구현
 
 **이 리포트는 두 가지를 구분합니다:**
 
@@ -27,13 +33,13 @@
    - User intervention at critical points
    - Follow-up task support
 
-2. **현재 구현** (`/Users/gregyh/Coding/fara-agent-main`)
+2. **Playwright CLI 구현** (`playwright-agent/`)
    - Single task per run
    - No history persistence between runs
    - No user intervention mechanism
    - Simplified architecture
 
-**이 괴리는 현재 코드베이스가 Fara-7B의 간소화된 버전이기 때문입니다.**
+**이 괴리는 Playwright CLI 코드베이스가 Fara-7B의 간소화된 데모 버전이기 때문입니다.**
 
 ---
 
@@ -41,7 +47,7 @@
 
 **모델명**: Fara-7B (Qwen2.5-VL-7B 기반)
 **개발**: Microsoft Research
-**발표**: 2024년 11월
+**발표**: 2025년 11월 24일
 **용도**: Computer Use Agent (웹 브라우저 자동화)
 
 **핵심 특징 (공식 설계):**
@@ -89,7 +95,7 @@
 
 ---
 
-## 2. 현재 구현 분석
+## 2. 현재 Playwright CLI 구현 분석
 
 ### ⚠️ 공식 설계와의 차이점
 

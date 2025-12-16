@@ -1,4 +1,7 @@
-# Fara-7B Agent 사용 가이드
+# FARA-7B Agent 사용 가이드 (Playwright CLI 기준)
+
+> **참고**: 이 문서는 **Playwright 기반 CLI 에이전트** 사용법을 설명합니다.
+> **Magentic-UI 환경**에서의 사용법은 [Magentic-UI 사용 가이드](./USAGE_GUIDE_MAGENTIC_UI.md)를 참조하세요.
 
 ## 📋 목차
 - [기본 설정](#기본-설정)
@@ -16,12 +19,12 @@
 1. **LM Studio** 실행 중이어야 함 (http://127.0.0.1:1234)
 2. **Fara-7B 모델** 로드됨
 3. **Python 환경** 활성화
-4. **의존성 설치** 완료 (Playwright, asyncio 등)
+4. **Playwright** 설치 완료
 
 ### 시작 전 체크리스트
 ```bash
-# 1. 프로젝트 디렉토리로 이동
-cd /Users/gregyh/Coding/fara-agent-main
+# 1. Playwright 에이전트 디렉토리로 이동
+cd /Users/gregyh/Coding/fara-agent-main/playwright-agent
 
 # 2. LM Studio가 실행 중인지 확인
 curl http://127.0.0.1:1234/v1/models

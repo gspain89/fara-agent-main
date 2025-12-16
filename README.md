@@ -1,6 +1,7 @@
 # FARA-7B Agent Project
 
 > Microsoft FARA-7B 모델을 사용한 로컬 브라우저 자동화 에이전트
+> **핵심 가치**: vLLM만 지원하던 Magentic-UI를 **LM Studio에서도 작동**하도록 구현
 > 두 가지 구현 방식 제공: **Playwright Agent** (독립 실행형) + **Magentic-UI Agent** (통합 프레임워크)
 
 ## 목차
@@ -15,8 +16,9 @@
   - [Magentic-UI Agent](#magentic-ui-agent)
 - [프로젝트 구조](#프로젝트-구조)
 - [문서](#문서)
-- [문제 해결 요약](#문제-해결-요약)
+- [문제 해결 과정 (참고)](#문제-해결-과정-참고)
 - [제약사항](#제약사항)
+- [트러블슈팅](#트러블슈팅)
 - [라이선스](#라이선스)
 
 ## 프로젝트 개요
@@ -192,30 +194,39 @@ fara-agent-main/
 │   ├── requirements.txt           # Python 의존성
 │   └── README.md                  # Magentic-UI Agent 문서
 │
-└── docs/                          # 상세 문서
-    ├── FARA_설정_분석_보고서.md   # 한글 분석 문서 (설정, 비교, 튜닝)
-    ├── FARA_ANALYSIS_REPORT.md   # 영문 분석 문서 (capability, 제약사항)
-    └── USAGE_GUIDE.md            # 사용 가이드 (10가지 실전 예제)
+└── docs/                                      # 상세 문서
+    ├── USAGE_GUIDE_MAGENTIC_UI.md            # Magentic-UI 사용 가이드 (LM Studio 연동)
+    ├── USAGE_GUIDE.md                        # Playwright CLI 사용 가이드
+    ├── FARA_Capability_분석_보고서.md         # Capability 분석 (Playwright 기준)
+    └── FARA_설정_분석_보고서.md               # 설정 분석 (참고 문서)
 ```
 
 ## 문서
 
-### 상세 문서
+### 사용 가이드
 
-- **[FARA 설정 분석 보고서 (한글)](./docs/FARA_설정_분석_보고서.md)**
-  - LM Studio vs vLLM 설정 비교
-  - Magentic-UI 상세 설정 분석
-  - 성능 튜닝 가이드
+- **[Magentic-UI 사용 가이드 (LM Studio 연동)](./docs/USAGE_GUIDE_MAGENTIC_UI.md)** ⭐ 권장
+  - **프로젝트 핵심**: vLLM만 지원하던 Magentic-UI를 LM Studio에서 작동시키는 방법
+  - LM Studio vs vLLM 비교
+  - 문제 해결 과정 상세 (blank screenshot, timeout, proxy)
+  - 웹 UI 기반 사용법
 
-- **[FARA Analysis Report (English)](./docs/FARA_ANALYSIS_REPORT.md)**
-  - FARA-7B capability 분석
+- **[Playwright CLI 사용 가이드](./docs/USAGE_GUIDE.md)**
+  - CLI 기반 빠른 실행
+  - 10가지 실전 예제
+  - 트러블슈팅
+
+### 참고 문서
+
+- **[FARA Capability 분석 보고서](./docs/FARA_Capability_분석_보고서.md)** (Playwright CLI 기준)
+  - FARA-7B 모델 capability 분석
   - 지원되는 11개 액션 목록
   - Vision-only 제약사항 상세
 
-- **[사용 가이드](./docs/USAGE_GUIDE.md)**
-  - 10가지 실전 예제
-  - 트러블슈팅
-  - 제약사항 및 우회 방법
+- **[FARA 설정 분석 보고서](./docs/FARA_설정_분석_보고서.md)** (참고 문서, Playwright CLI 기준)
+  - LM Studio vs vLLM 설정 비교
+  - Magentic-UI 상세 설정 분석
+  - 성능 튜닝 가이드
 
 ### 참고 자료
 
@@ -224,7 +235,10 @@ fara-agent-main/
 - [Magentic-UI GitHub](https://github.com/microsoft/magentic-ui)
 - [LM Studio 문서](https://lmstudio.ai/docs)
 
-## 문제 해결 요약
+## 문제 해결 과정 (참고)
+
+> **참고**: 이 섹션은 프로젝트 개발 중 겪었던 시행착오를 기록한 것입니다.
+> 현재는 모두 해결되었으며, 자세한 내용은 [Magentic-UI 사용 가이드](./docs/USAGE_GUIDE_MAGENTIC_UI.md)를 참조하세요.
 
 이 프로젝트 개발 중 해결한 주요 문제들:
 
@@ -243,27 +257,33 @@ fara-agent-main/
 **결론**: Magentic-UI FARA 에이전트가 `<tool_call>` XML 형식을 직접 파싱
 **해결**: LM Studio에 직접 연결 (proxy 제거)
 
-## 제약사항
+## 제약사항 및 활용 범위
 
-FARA-7B는 Vision-only 접근 방식을 사용하므로 다음 제약이 있습니다:
+FARA-7B는 Vision 기반 접근 방식을 사용합니다. **실행 환경에 따라 활용 범위가 다릅니다**:
 
-### 불가능한 작업
+### Magentic-UI 환경 (권장)
 
-- **텍스트 추출/읽기**: DOM에서 텍스트를 가져올 수 없음 (스크린샷만 사용)
-- **페이지 요약**: 텍스트 내용을 읽지 못하므로 요약 불가
-- **정보 추출**: 가격, 리뷰, 댓글 등 특정 텍스트 추출 불가
-- **로그인 후 작업**: 세션 유지가 안 되므로 로그인 필요 작업 불가
-- **데이터 스크래핑**: 구조화된 데이터 추출 불가
-
-### 가능한 작업
-
-- **네비게이션**: 웹사이트 방문, 클릭, 스크롤
+**가능한 작업**:
+- **웹 네비게이션**: 웹사이트 방문, 클릭, 스크롤, 다중 페이지 작업
+- **정보 수집/요약**: 웹 페이지 내용 읽기 및 요약 (Vision 기반)
 - **폼 작성**: 텍스트 입력, 버튼 클릭, 드롭다운 선택
+- **복잡한 작업**: Multi-agent 협업, 사용자 승인 기반 실행 (Co-planning)
+- **세션 관리**: 작업 이력 유지, Live View (Docker VNC)
+
+### Playwright CLI 환경
+
+**가능한 작업**:
+- **웹 네비게이션**: 웹사이트 방문, 클릭, 스크롤
+- **폼 작성**: 텍스트 입력, 버튼 클릭
 - **검색**: 검색어 입력 및 결과 클릭
 - **시각적 확인**: 페이지 도달 여부, 레이아웃 확인
 - **반복 자동화**: 정형화된 웹 작업 반복 실행
 
-자세한 내용은 [FARA Analysis Report](./docs/FARA_ANALYSIS_REPORT.md) 참조.
+**제한 사항** (Playwright CLI 구현 한계):
+- 간소화된 데모 버전으로 multi-turn/세션 관리 미지원
+- 구조화된 데이터 추출 기능 미구현
+
+자세한 내용은 [FARA Capability 분석 보고서](./docs/FARA_Capability_분석_보고서.md) (Playwright CLI 기준) 참조.
 
 ## 트러블슈팅
 
@@ -300,28 +320,23 @@ docker ps
 magentic-ui --fara --port 8081 --config fara_config.yaml
 ```
 
-더 많은 문제 해결 방법은 [사용 가이드](./docs/USAGE_GUIDE.md) 참조.
-
-## 기여
-
-이 프로젝트는 FARA-7B 모델의 간소화된 데모 구현입니다.
-공식 Microsoft FARA 프로젝트는 [GitHub](https://github.com/microsoft/fara)를 참조하세요.
+더 많은 문제 해결 방법은 [사용 가이드](./docs/USAGE_GUIDE.md) 및 [Magentic-UI 사용 가이드](./docs/USAGE_GUIDE_MAGENTIC_UI.md) 참조.
 
 ## 라이선스
 
+이 프로젝트는 다음 오픈소스 프로젝트들의 라이선스를 준용합니다:
+
+- **FARA-7B Model**: [MIT License](https://huggingface.co/microsoft/Fara-7B) (Microsoft)
+- **Magentic-UI**: [MIT License](https://github.com/microsoft/magentic-ui) (Microsoft)
+- **Playwright**: [Apache License 2.0](https://github.com/microsoft/playwright) (Microsoft)
+
+### 이 프로젝트의 코드
+
 MIT License
 
-Copyright (c) 2025 Slava Trofimov (https://github.com/pmbstyle)
+Copyright (c) 2025
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+본 소프트웨어 및 관련 문서 파일(이하 "소프트웨어")의 복사본을 취득하는 모든 사람에게 무료로 사용, 복사, 수정, 병합, 게시, 배포, 재라이선스 및 판매할 수 있는 권한을 제한 없이 부여합니다.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -335,3 +350,7 @@ SOFTWARE.
 
 **프로젝트 생성**: 2025-12-15
 **최종 수정**: 2025-12-15
+
+### 참고
+
+공식 Microsoft FARA 프로젝트: [github.com/microsoft/fara](https://github.com/microsoft/fara)
