@@ -1,0 +1,37 @@
+# Magentic-UI Configuration for FARA-7B with LM Studio (Direct Connection)
+#
+# Architecture:
+#   magentic-ui (8081) → LM Studio (1234)
+#
+# Magentic-UI's FARA agent handles <tool_call> XML parsing natively
+
+model_config_local_surfer: &client_surfer
+  provider: OpenAIChatCompletionClient
+  config:
+    # Model name: Use LM Studio format to avoid mismatch warnings
+    model: "microsoft_fara-7b"
+
+    # Base URL: Direct connection to LM Studio (no proxy needed)
+    base_url: http://127.0.0.1:1234/v1
+
+    # API key: Dummy key for local inference
+    api_key: lm-studio
+
+    # Model capabilities
+    # These inform magentic-ui what the model can do
+    # NOTE: These do NOT change how LM Studio serves the model
+    model_info:
+      vision: true                    # Supports image input
+      function_calling: true          # Supports tool/function calls
+      json_output: false              # Does not support JSON mode
+      family: "unknown"
+      structured_output: false
+      multiple_system_messages: false
+
+# Apply the same configuration to all agent clients
+orchestrator_client: *client_surfer
+coder_client: *client_surfer
+web_surfer_client: *client_surfer
+file_surfer_client: *client_surfer
+action_guard_client: *client_surfer
+model_client: *client_surfer

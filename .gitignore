@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+screenshots/
+*.log
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Claude
+.claude/
+
+AGENTS.md

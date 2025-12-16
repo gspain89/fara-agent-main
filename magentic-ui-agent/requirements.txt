@@ -1,0 +1,11 @@
+# Middleware Proxy dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+httpx>=0.25.0
+pydantic>=2.0.0
+
+# OpenAI client (for compatibility)
+openai>=1.0.0
+
+# Magentic-UI with FARA support
+magentic-ui[fara]
