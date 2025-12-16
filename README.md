@@ -12,7 +12,7 @@
   - [필수 조건](#필수-조건)
   - [LM Studio 설정](#lm-studio-설정)
 - [사용 방법](#사용-방법)
-  - [Playwright Agent (권장)](#playwright-agent-권장)
+  - [Playwright Agent](#playwright-agent)
   - [Magentic-UI Agent](#magentic-ui-agent)
 - [프로젝트 구조](#프로젝트-구조)
 - [문서](#문서)
@@ -72,7 +72,7 @@
 
 ## 사용 방법
 
-### Playwright Agent (권장)
+### Playwright Agent
 
 빠른 CLI 기반 실행형 에이전트. 자동화 스크립트에 적합.
 
