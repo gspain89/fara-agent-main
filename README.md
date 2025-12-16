@@ -128,7 +128,7 @@ python run_agent.py --task "작업 내용" --headful --keep-open
    python run_agent.py --task "Go to Google and search for 'machine learning tutorial', click the first result"
    ```
 
-자세한 예제는 [사용 가이드](./docs/USAGE_GUIDE.md) 참조.
+자세한 예제는 [사용 가이드](./docs/USAGE_GUIDE_%20Playwright%20CLI.md) 참조.
 
 ### Magentic-UI Agent
 
@@ -166,7 +166,7 @@ model_config_local_surfer: &client_surfer
 
 **주요 변경 사항**:
 - `/opt/homebrew/lib/python3.11/site-packages/magentic_ui/agents/web_surfer/fara/_fara_web_surfer.py`:
-  - Line 64: `model_call_timeout: int = 60` (기존 20초 → 60초)
+  - Line 64: `model_call_timeout: int = 120` (기존 20초 → 120초)
   - Vision 처리 시간 확보용
 
 ## 프로젝트 구조
@@ -196,9 +196,8 @@ fara-agent-main/
 │
 └── docs/                                      # 상세 문서
     ├── USAGE_GUIDE_MAGENTIC_UI.md            # Magentic-UI 사용 가이드 (LM Studio 연동)
-    ├── USAGE_GUIDE.md                        # Playwright CLI 사용 가이드
-    ├── FARA_Capability_분석_보고서.md         # Capability 분석 (Playwright 기준)
-    └── FARA_설정_분석_보고서.md               # 설정 분석 (참고 문서)
+    ├── USAGE_GUIDE_ Playwright CLI.md        # Playwright CLI 사용 가이드
+    └── FARA_7B_Capability_분석_보고서.md      # Capability 분석 (Playwright 기준)
 ```
 
 ## 문서
@@ -211,22 +210,17 @@ fara-agent-main/
   - 문제 해결 과정 상세 (blank screenshot, timeout, proxy)
   - 웹 UI 기반 사용법
 
-- **[Playwright CLI 사용 가이드](./docs/USAGE_GUIDE.md)**
+- **[Playwright CLI 사용 가이드](./docs/USAGE_GUIDE_%20Playwright%20CLI.md)**
   - CLI 기반 빠른 실행
   - 10가지 실전 예제
   - 트러블슈팅
 
 ### 참고 문서
 
-- **[FARA Capability 분석 보고서](./docs/FARA_Capability_분석_보고서.md)** (Playwright CLI 기준)
+- **[FARA Capability 분석 보고서](./docs/FARA_7B_Capability_분석_보고서.md)** (Playwright CLI 기준)
   - FARA-7B 모델 capability 분석
   - 지원되는 11개 액션 목록
   - Vision-only 제약사항 상세
-
-- **[FARA 설정 분석 보고서](./docs/FARA_설정_분석_보고서.md)** (참고 문서, Playwright CLI 기준)
-  - LM Studio vs vLLM 설정 비교
-  - Magentic-UI 상세 설정 분석
-  - 성능 튜닝 가이드
 
 ### 참고 자료
 
@@ -283,7 +277,7 @@ FARA-7B는 Vision 기반 접근 방식을 사용합니다. **실행 환경에 �
 - 간소화된 데모 버전으로 multi-turn/세션 관리 미지원
 - 구조화된 데이터 추출 기능 미구현
 
-자세한 내용은 [FARA Capability 분석 보고서](./docs/FARA_Capability_분석_보고서.md) (Playwright CLI 기준) 참조.
+자세한 내용은 [FARA Capability 분석 보고서](./docs/FARA_7B_Capability_분석_보고서.md) (Playwright CLI 기준) 참조.
 
 ## 트러블슈팅
 
@@ -320,7 +314,7 @@ docker ps
 magentic-ui --fara --port 8081 --config fara_config.yaml
 ```
 
-더 많은 문제 해결 방법은 [사용 가이드](./docs/USAGE_GUIDE.md) 및 [Magentic-UI 사용 가이드](./docs/USAGE_GUIDE_MAGENTIC_UI.md) 참조.
+더 많은 문제 해결 방법은 [사용 가이드](./docs/USAGE_GUIDE_%20Playwright%20CLI.md) 및 [Magentic-UI 사용 가이드](./docs/USAGE_GUIDE_MAGENTIC_UI.md) 참조.
 
 ## 라이선스
 

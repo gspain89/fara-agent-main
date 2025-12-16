@@ -373,7 +373,7 @@ model_call_timeout: int = 20  # ← 20초
 
 ```python
 # /opt/homebrew/lib/python3.11/site-packages/magentic_ui/agents/web_surfer/fara/_fara_web_surfer.py:64
-model_call_timeout: int = 60  # 20 → 60초
+model_call_timeout: int = 120  # 20 → 120초
 ```
 
 **결과**:
@@ -553,7 +553,7 @@ TimeoutError: Model call timeout (20s)
 **해결**:
 1. `_fara_web_surfer.py` 수정 (이미 적용됨):
    ```python
-   model_call_timeout: int = 60
+   model_call_timeout: int = 120
    ```
 2. Magentic-UI 재시작
 
