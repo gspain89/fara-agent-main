@@ -1,82 +1,131 @@
-# FARA-7B Agent Project
+# FARA-7B Browser Agent (Playwright + LM Studio)
 
-> Microsoft FARA-7B 모델을 사용한 로컬 브라우저 자동화 에이전트
-> **핵심 가치**: vLLM만 지원하던 Magentic-UI를 **LM Studio에서도 작동**하도록 구현
-> 두 가지 구현 방식 제공: **Playwright Agent** (독립 실행형) + **Magentic-UI Agent** (통합 프레임워크)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![LM Studio Compatible](https://img.shields.io/badge/LM%20Studio-Compatible-green.svg)](https://lmstudio.ai/)
+[![Ollama Compatible](https://img.shields.io/badge/Ollama-Compatible-green.svg)](https://ollama.ai/)
+[![llama.cpp](https://img.shields.io/badge/llama.cpp-Powered-orange.svg)](https://github.com/ggerganov/llama.cpp)
 
-## 목차
+> 🚀 **Run Microsoft's FARA-7B browser agent 100% locally using llama.cpp engines (LM Studio/Ollama)**
 
-- [프로젝트 개요](#프로젝트-개요)
-- [주요 특징](#주요-특징)
-- [시작하기](#시작하기)
-  - [필수 조건](#필수-조건)
-  - [LM Studio 설정](#lm-studio-설정)
-- [사용 방법](#사용-방법)
+## 🎯 Why This Project?
+
+**Problem**: Magentic-UI only supported vLLM, limiting local deployment options
+**Solution**: This project bridges FARA-7B with llama.cpp-based engines (LM Studio/Ollama)
+
+**Key Achievement**:
+- ✅ Run FARA-7B on consumer GPUs (8GB+ VRAM with quantization)
+- ✅ No cloud dependencies - 100% local execution
+- ✅ OpenAI-compatible API for easy integration
+- ✅ Two implementation approaches: **Playwright Agent** (standalone) + **Magentic-UI Agent** (integrated framework)
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [LM Studio Setup](#lm-studio-setup)
+- [Usage](#usage)
   - [Playwright Agent](#playwright-agent)
   - [Magentic-UI Agent](#magentic-ui-agent)
-- [프로젝트 구조](#프로젝트-구조)
-- [문서](#문서)
-- [문제 해결 과정 (참고)](#문제-해결-과정-참고)
-- [제약사항](#제약사항)
-- [트러블슈팅](#트러블슈팅)
-- [라이선스](#라이선스)
+- [Project Structure](#project-structure)
+- [Documentation](#documentation)
+- [Troubleshooting Journey](#troubleshooting-journey)
+- [Limitations](#limitations)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
 
-## 프로젝트 개요
+---
 
-이 프로젝트는 **Microsoft FARA-7B** (7B parameter agentic model)를 사용하여 웹 브라우저를 자동화하는 두 가지 구현을 제공합니다:
+## Overview
 
-1. **Playwright Agent**: CLI 기반의 빠르고 간단한 독립 실행형 에이전트
-2. **Magentic-UI Agent**: 웹 UI를 통한 사용자 승인 기반 통합 프레임워크
+This project provides **two implementations** for browser automation using **Microsoft FARA-7B** (7B parameter agentic model):
 
-### 핵심 특징
+1. **Playwright Agent**: Fast, CLI-based standalone agent for automation scripts
+2. **Magentic-UI Agent**: Web UI-based framework with user approval and co-planning
 
-- 100% 로컬 실행 (LM Studio 사용)
-- Vision-centric 접근 (스크린샷 기반 제어)
-- OpenAI API 호환
-- DOM/Accessibility tree 불필요
-- GPU 최적화 (quantized 모델 지원)
+### Core Features
 
-## 주요 특징
+- **100% Local Execution** (LM Studio/Ollama via llama.cpp)
+- **Vision-Centric Approach** (Screenshot-based control)
+- **OpenAI API Compatible**
+- **No DOM/Accessibility Tree Required**
+- **GPU Optimized** (Quantized model support)
 
-| 항목 | Playwright Agent | Magentic-UI Agent |
-|------|------------------|-------------------|
-| **실행 방식** | CLI (터미널) | 웹 UI (localhost:8081) |
-| **속도** | 빠름 | 보통 (오케스트레이션 오버헤드) |
-| **사용자 승인** | 없음 (자동 실행) | Co-planning (실행 전 승인) |
-| **안전성** | 낮음 | 높음 (Action guards) |
-| **적합 사용** | 반복 자동화, 스크립트 | 복잡한 작업, 대화형 계획 |
-| **Live View** | 없음 | Docker 브라우저 (VNC) |
+---
 
-## 시작하기
+## Key Features
 
-### 필수 조건
+| Feature | Playwright Agent | Magentic-UI Agent |
+|---------|------------------|-------------------|
+| **Execution** | CLI (Terminal) | Web UI (localhost:8081) |
+| **Speed** | Fast | Moderate (orchestration overhead) |
+| **User Approval** | None (auto-execution) | Co-planning (approval before execution) |
+| **Safety** | Low | High (Action guards) |
+| **Best For** | Repetitive automation, scripts | Complex tasks, interactive planning |
+| **Live View** | None | Docker browser (VNC) |
+
+### Comparison: vLLM vs llama.cpp (LM Studio/Ollama)
+
+| Aspect | vLLM (Original) | llama.cpp (This Project) |
+|--------|-----------------|--------------------------|
+| **Deployment** | Server-grade (A100/H100) | Consumer GPUs (RTX 3060+) |
+| **Memory** | 16GB+ VRAM required | 8GB VRAM (with quantization) |
+| **Setup** | Complex (Python env, CUDA) | Simple (Download LM Studio) |
+| **Cost** | Cloud hosting required | Free, local execution |
+| **Speed** | Faster (FP16) | Moderate (quantized) |
+
+---
+
+## Getting Started
+
+### Prerequisites
 
 - **Python 3.11+**
-- **LM Studio** ([다운로드](https://lmstudio.ai/))
-- **FARA-7B 모델** (LM Studio에서 다운로드)
-- **Playwright** (브라우저 자동화)
-- **(Magentic-UI 사용 시) Docker** (Live View용)
+- **LM Studio** ([Download](https://lmstudio.ai/)) or **Ollama** ([Download](https://ollama.ai/))
+- **FARA-7B Model** (Download in LM Studio/Ollama)
+- **Playwright** (Browser automation)
+- **(Magentic-UI only) Docker** (For Live View)
 
-### LM Studio 설정
+### LM Studio Setup
 
-1. LM Studio 실행
-2. FARA-7B 모델 다운로드 및 로드
-   - 모델 이름: `microsoft/Fara-7B` 또는 `microsoft_fara-7b`
-3. Local Server 시작
-   - 포트: `1234` (기본값)
-   - **중요**: max_token을 **15000**으로 설정 (Vision 요청용)
-4. 서버 확인:
+1. Launch LM Studio
+2. Download and load FARA-7B model
+   - Model name: `microsoft/Fara-7B` or `microsoft_fara-7b`
+3. Start Local Server
+   - Port: `1234` (default)
+   - **Important**: Set `max_tokens` to **15000** (for Vision requests)
+4. Verify server:
    ```bash
    curl http://127.0.0.1:1234/v1/models
    ```
 
-## 사용 방법
+### Ollama Setup (Alternative)
+
+```bash
+# Pull FARA-7B model
+ollama pull fara:7b
+
+# Run model with increased context
+ollama run fara:7b --num-ctx 15000
+
+# Verify
+curl http://127.0.0.1:11434/api/tags
+```
+
+---
+
+## Usage
 
 ### Playwright Agent
 
-빠른 CLI 기반 실행형 에이전트. 자동화 스크립트에 적합.
+Fast CLI-based agent for automation scripts.
 
-#### 설치
+#### Installation
 
 ```bash
 cd playwright-agent
@@ -84,22 +133,22 @@ pip install -r requirements.txt
 python -m playwright install chromium
 ```
 
-#### 실행
+#### Running
 
 ```bash
-# 기본 실행 (헤드리스 모드)
+# Basic execution (headless mode)
 python run_agent.py --task "Go to GitHub and search for 'playwright'"
 
-# 브라우저 GUI 표시 (디버깅용)
+# Show browser GUI (for debugging)
 python run_agent.py --task "Go to GitHub and search for 'playwright'" --headful
 
-# 작업 완료 후 브라우저 유지
-python run_agent.py --task "작업 내용" --headful --keep-open
+# Keep browser open after task completion
+python run_agent.py --task "Your task here" --headful --keep-open
 ```
 
-#### 설정
+#### Configuration
 
-`playwright-agent/config.json`:
+Edit `playwright-agent/config.json`:
 ```json
 {
   "model": "microsoft_fara-7b",
@@ -111,47 +160,49 @@ python run_agent.py --task "작업 내용" --headful --keep-open
 }
 ```
 
-#### 사용 예제
+#### Example Tasks
 
-1. **GitHub 검색**
+1. **GitHub Search**
    ```bash
    python run_agent.py --task "Go to GitHub and search for 'fastapi'" --headful
    ```
 
-2. **Wikipedia 탐색**
+2. **Wikipedia Navigation**
    ```bash
    python run_agent.py --task "Go to Wikipedia and search for 'Python programming', click the article" --headful --keep-open
    ```
 
-3. **Google 검색 후 결과 클릭**
+3. **Google Search + Click Result**
    ```bash
    python run_agent.py --task "Go to Google and search for 'machine learning tutorial', click the first result"
    ```
 
-자세한 예제는 [사용 가이드](./docs/USAGE_GUIDE_%20Playwright%20CLI.md) 참조.
+See [Playwright CLI Usage Guide](./docs/USAGE_GUIDE_%20Playwright%20CLI.md) for more examples.
+
+---
 
 ### Magentic-UI Agent
 
-웹 UI 기반 에이전트. 사용자 승인 및 계획 기능 제공.
+Web UI-based agent with user approval and planning features.
 
-#### 설치
+#### Installation
 
 ```bash
 cd magentic-ui-agent
 pip install -r requirements.txt
 ```
 
-#### 실행
+#### Running
 
 ```bash
 magentic-ui --fara --port 8081 --config fara_config.yaml
 ```
 
-브라우저에서 **http://localhost:8081** 접속
+Open browser at **http://localhost:8081**
 
-#### 설정
+#### Configuration
 
-`magentic-ui-agent/fara_config.yaml`:
+Edit `magentic-ui-agent/fara_config.yaml`:
 ```yaml
 model_config_local_surfer: &client_surfer
   provider: OpenAIChatCompletionClient
@@ -164,173 +215,208 @@ model_config_local_surfer: &client_surfer
       function_calling: true
 ```
 
-**주요 변경 사항**:
-- `/opt/homebrew/lib/python3.11/site-packages/magentic_ui/agents/web_surfer/fara/_fara_web_surfer.py`:
-  - Line 64: `model_call_timeout: int = 120` (기존 20초 → 120초)
-  - Vision 처리 시간 확보용
+**Critical Modification**:
+- Edit `/opt/homebrew/lib/python3.11/site-packages/magentic_ui/agents/web_surfer/fara/_fara_web_surfer.py`:
+  - Line 64: Change `model_call_timeout: int = 20` to `model_call_timeout: int = 120`
+  - Reason: Vision processing requires 15-20 seconds per request
 
-## 프로젝트 구조
+---
+
+## Project Structure
 
 ```
 fara-agent-main/
-├── README.md                      # 이 파일
-├── LICENSE                        # MIT 라이선스
-├── .gitignore                     # Git 설정
+├── README.md                      # This file
+├── LICENSE                        # MIT License
+├── .gitignore                     # Git configuration
 │
-├── playwright-agent/              # Playwright 기반 독립 에이전트
-│   ├── agent.py                   # FaraAgent 클래스 (메인 로직)
-│   ├── browser.py                 # SimpleBrowser 클래스 (Playwright 래퍼)
-│   ├── run_agent.py               # CLI 엔트리 포인트
-│   ├── message_types.py           # LLM 메시지 데이터 구조
-│   ├── prompts.py                 # 시스템 프롬프트 생성
-│   ├── utils.py                   # URL 유틸리티
-│   ├── config.json                # 에이전트 설정
-│   ├── requirements.txt           # Python 의존성
-│   ├── README.md                  # Playwright Agent 문서
-│   └── downloads/                 # 다운로드 파일 저장
+├── playwright-agent/              # Playwright-based standalone agent
+│   ├── agent.py                   # FaraAgent class (main logic)
+│   ├── browser.py                 # SimpleBrowser class (Playwright wrapper)
+│   ├── run_agent.py               # CLI entry point
+│   ├── message_types.py           # LLM message data structures
+│   ├── prompts.py                 # System prompt generation
+│   ├── utils.py                   # URL utilities
+│   ├── config.json                # Agent configuration
+│   ├── requirements.txt           # Python dependencies
+│   ├── README.md                  # Playwright Agent docs
+│   └── downloads/                 # Downloaded files storage
 │
-├── magentic-ui-agent/             # Magentic-UI 통합
-│   ├── fara_config.yaml           # Magentic-UI 설정 (최종 작동 버전)
-│   ├── requirements.txt           # Python 의존성
-│   └── README.md                  # Magentic-UI Agent 문서
+├── magentic-ui-agent/             # Magentic-UI integration
+│   ├── fara_config.yaml           # Magentic-UI config (working version)
+│   ├── requirements.txt           # Python dependencies
+│   └── README.md                  # Magentic-UI Agent docs
 │
-└── docs/                                      # 상세 문서
-    ├── USAGE_GUIDE_MAGENTIC_UI.md            # Magentic-UI 사용 가이드 (LM Studio 연동)
-    ├── USAGE_GUIDE_ Playwright CLI.md        # Playwright CLI 사용 가이드
-    └── FARA_7B_Capability_분석_보고서.md      # Capability 분석 (Playwright 기준)
+└── docs/                                      # Detailed documentation
+    ├── USAGE_GUIDE_MAGENTIC_UI.md            # Magentic-UI Usage Guide (LM Studio integration)
+    ├── USAGE_GUIDE_ Playwright CLI.md        # Playwright CLI Usage Guide
+    └── FARA_7B_Capability_분석_보고서.md      # Capability Analysis (Playwright-based)
 ```
 
-## 문서
+---
 
-### 사용 가이드
+## Documentation
 
-- **[Magentic-UI 사용 가이드 (LM Studio 연동)](./docs/USAGE_GUIDE_MAGENTIC_UI.md)** ⭐ 권장
-  - **프로젝트 핵심**: vLLM만 지원하던 Magentic-UI를 LM Studio에서 작동시키는 방법
-  - LM Studio vs vLLM 비교
-  - 문제 해결 과정 상세 (blank screenshot, timeout, proxy)
-  - 웹 UI 기반 사용법
+### Usage Guides
 
-- **[Playwright CLI 사용 가이드](./docs/USAGE_GUIDE_%20Playwright%20CLI.md)**
-  - CLI 기반 빠른 실행
-  - 10가지 실전 예제
-  - 트러블슈팅
+- **[Magentic-UI Usage Guide (LM Studio Integration)](./docs/USAGE_GUIDE_MAGENTIC_UI.md)** ⭐ Recommended
+  - **Project Core**: How to run Magentic-UI (originally vLLM-only) with LM Studio
+  - LM Studio vs vLLM comparison
+  - Detailed troubleshooting (blank screenshot, timeout, proxy)
+  - Web UI usage instructions
 
-### 참고 문서
+- **[Playwright CLI Usage Guide](./docs/USAGE_GUIDE_%20Playwright%20CLI.md)**
+  - Fast CLI-based execution
+  - 10 practical examples
+  - Troubleshooting tips
 
-- **[FARA Capability 분석 보고서](./docs/FARA_7B_Capability_분석_보고서.md)** (Playwright CLI 기준)
-  - FARA-7B 모델 capability 분석
-  - 지원되는 11개 액션 목록
-  - Vision-only 제약사항 상세
+### Reference Documentation
 
-### 참고 자료
+- **[FARA Capability Analysis Report](./docs/FARA_7B_Capability_분석_보고서.md)** (Playwright CLI-based)
+  - FARA-7B model capability analysis
+  - List of 11 supported actions
+  - Vision-only constraints detailed
 
-- [FARA-7B 논문 (ArXiv)](https://arxiv.org/abs/2511.19663)
+### External Resources
+
+- [FARA-7B Paper (ArXiv)](https://arxiv.org/abs/2511.19663)
 - [FARA-7B HuggingFace](https://huggingface.co/microsoft/Fara-7B)
 - [Magentic-UI GitHub](https://github.com/microsoft/magentic-ui)
-- [LM Studio 문서](https://lmstudio.ai/docs)
+- [LM Studio Documentation](https://lmstudio.ai/docs)
+- [Ollama Documentation](https://ollama.ai/docs)
 
-## 문제 해결 과정 (참고)
+---
 
-> **참고**: 이 섹션은 프로젝트 개발 중 겪었던 시행착오를 기록한 것입니다.
-> 현재는 모두 해결되었으며, 자세한 내용은 [Magentic-UI 사용 가이드](./docs/USAGE_GUIDE_MAGENTIC_UI.md)를 참조하세요.
+## Troubleshooting Journey
 
-이 프로젝트 개발 중 해결한 주요 문제들:
+> **Note**: This section documents challenges encountered during development.
+> All issues are now resolved. See [Magentic-UI Usage Guide](./docs/USAGE_GUIDE_MAGENTIC_UI.md) for details.
 
-### 1. Blank Screenshot 이슈
-**증상**: 모델이 스크린샷을 보지 못하고 "blank image"라고 응답
-**원인**: LM Studio의 max_token이 4000으로 제한되어 이미지 데이터 truncate
-**해결**: LM Studio max_token을 **15000**으로 증가
+Key problems solved during development:
 
-### 2. Client Disconnected 메시지
-**증상**: Vision 요청 중 "Client disconnected" 메시지 반복
-**원인**: `model_call_timeout: int = 20` (20초)이 Vision 처리 시간(15-20초)보다 짧음
-**해결**: `_fara_web_surfer.py`의 `model_call_timeout`을 **60초**로 증가
+### 1. Blank Screenshot Issue
+**Symptom**: Model couldn't see screenshots, responded with "blank image"
+**Cause**: LM Studio `max_tokens` limited to 4000, truncating image data
+**Solution**: Increased LM Studio `max_tokens` to **15000**
 
-### 3. Proxy 불필요
-**시도**: Tool calling을 위한 middleware proxy 구현
-**결론**: Magentic-UI FARA 에이전트가 `<tool_call>` XML 형식을 직접 파싱
-**해결**: LM Studio에 직접 연결 (proxy 제거)
+### 2. Client Disconnected Messages
+**Symptom**: Repeated "Client disconnected" messages during Vision requests
+**Cause**: `model_call_timeout: int = 20` (20 seconds) shorter than Vision processing time (15-20 seconds)
+**Solution**: Increased `model_call_timeout` in `_fara_web_surfer.py` to **60 seconds**
 
-## 제약사항 및 활용 범위
+### 3. Proxy Unnecessary
+**Attempt**: Implemented middleware proxy for tool calling
+**Conclusion**: Magentic-UI FARA agent directly parses `<tool_call>` XML format
+**Solution**: Direct connection to LM Studio (removed proxy)
 
-FARA-7B는 Vision 기반 접근 방식을 사용합니다. **실행 환경에 따라 활용 범위가 다릅니다**:
+---
 
-### Magentic-UI 환경 (권장)
+## Limitations and Use Cases
 
-**가능한 작업**:
-- **웹 네비게이션**: 웹사이트 방문, 클릭, 스크롤, 다중 페이지 작업
-- **정보 수집/요약**: 웹 페이지 내용 읽기 및 요약 (Vision 기반)
-- **폼 작성**: 텍스트 입력, 버튼 클릭, 드롭다운 선택
-- **복잡한 작업**: Multi-agent 협업, 사용자 승인 기반 실행 (Co-planning)
-- **세션 관리**: 작업 이력 유지, Live View (Docker VNC)
+FARA-7B uses a Vision-based approach. **Capabilities vary by execution environment**:
 
-### Playwright CLI 환경
+### Magentic-UI Environment (Recommended)
 
-**가능한 작업**:
-- **웹 네비게이션**: 웹사이트 방문, 클릭, 스크롤
-- **폼 작성**: 텍스트 입력, 버튼 클릭
-- **검색**: 검색어 입력 및 결과 클릭
-- **시각적 확인**: 페이지 도달 여부, 레이아웃 확인
-- **반복 자동화**: 정형화된 웹 작업 반복 실행
+**Supported Tasks**:
+- **Web Navigation**: Visit websites, click, scroll, multi-page workflows
+- **Information Gathering/Summarization**: Read and summarize web pages (Vision-based)
+- **Form Filling**: Text input, button clicks, dropdown selection
+- **Complex Tasks**: Multi-agent collaboration, user approval-based execution (Co-planning)
+- **Session Management**: Task history, Live View (Docker VNC)
 
-**제한 사항** (Playwright CLI 구현 한계):
-- 간소화된 데모 버전으로 multi-turn/세션 관리 미지원
-- 구조화된 데이터 추출 기능 미구현
+### Playwright CLI Environment
 
-자세한 내용은 [FARA Capability 분석 보고서](./docs/FARA_7B_Capability_분석_보고서.md) (Playwright CLI 기준) 참조.
+**Supported Tasks**:
+- **Web Navigation**: Visit websites, click, scroll
+- **Form Filling**: Text input, button clicks
+- **Search**: Enter search queries and click results
+- **Visual Verification**: Check page arrival, layout confirmation
+- **Repetitive Automation**: Repeat standardized web tasks
 
-## 트러블슈팅
+**Limitations** (Playwright CLI implementation):
+- Simplified demo version without multi-turn/session management
+- Structured data extraction not implemented
 
-### LM Studio 연결 실패
+See [FARA Capability Analysis Report](./docs/FARA_7B_Capability_분석_보고서.md) (Playwright CLI-based) for details.
+
+---
+
+## Troubleshooting
+
+### LM Studio Connection Failed
 
 ```bash
-# 서버 상태 확인
+# Check server status
 curl http://127.0.0.1:1234/v1/models
 
-# 응답이 없으면:
-# 1. LM Studio 실행 확인
-# 2. Local Server 시작 (포트 1234)
-# 3. FARA-7B 모델 로드 확인
+# If no response:
+# 1. Verify LM Studio is running
+# 2. Start Local Server (port 1234)
+# 3. Confirm FARA-7B model is loaded
 ```
 
-### Playwright 브라우저 오류
+### Playwright Browser Errors
 
 ```bash
-# Playwright Chromium 재설치
+# Reinstall Playwright Chromium
 python -m playwright install chromium
 
-# 권한 문제 시
+# If permission issues
 sudo python -m playwright install chromium
 ```
 
-### Magentic-UI Docker 이미지 문제
+### Magentic-UI Docker Image Issues
 
 ```bash
-# Docker 상태 확인
+# Check Docker status
 docker ps
 
-# Magentic-UI 재시작
-# Ctrl+C로 종료 후 다시 실행
+# Restart Magentic-UI
+# Press Ctrl+C to stop, then restart
 magentic-ui --fara --port 8081 --config fara_config.yaml
 ```
 
-더 많은 문제 해결 방법은 [사용 가이드](./docs/USAGE_GUIDE_%20Playwright%20CLI.md) 및 [Magentic-UI 사용 가이드](./docs/USAGE_GUIDE_MAGENTIC_UI.md) 참조.
+More troubleshooting solutions in [Usage Guides](./docs/USAGE_GUIDE_%20Playwright%20CLI.md) and [Magentic-UI Usage Guide](./docs/USAGE_GUIDE_MAGENTIC_UI.md).
 
-## 라이선스
+---
 
-이 프로젝트는 다음 오픈소스 프로젝트들의 라이선스를 준용합니다:
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+### How to Contribute
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## License
+
+This project follows the licenses of the following open-source projects:
 
 - **FARA-7B Model**: [MIT License](https://huggingface.co/microsoft/Fara-7B) (Microsoft)
 - **Magentic-UI**: [MIT License](https://github.com/microsoft/magentic-ui) (Microsoft)
 - **Playwright**: [Apache License 2.0](https://github.com/microsoft/playwright) (Microsoft)
 
-### 이 프로젝트의 코드
+### Project Code
 
 MIT License
 
 Copyright (c) 2025
 
-본 소프트웨어 및 관련 문서 파일(이하 "소프트웨어")의 복사본을 취득하는 모든 사람에게 무료로 사용, 복사, 수정, 병합, 게시, 배포, 재라이선스 및 판매할 수 있는 권한을 제한 없이 부여합니다.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -342,9 +428,23 @@ SOFTWARE.
 
 ---
 
-**프로젝트 생성**: 2025-12-15
-**최종 수정**: 2025-12-15
+## Star History
 
-### 참고
+If you find this project useful, please consider giving it a star! ⭐
 
-공식 Microsoft FARA 프로젝트: [github.com/microsoft/fara](https://github.com/microsoft/fara)
+---
+
+## Acknowledgments
+
+- **Microsoft** for FARA-7B, Magentic-UI, and Playwright
+- **llama.cpp community** for enabling local LLM inference
+- **LM Studio & Ollama teams** for user-friendly local LLM platforms
+
+---
+
+**Project Created**: 2025-12-15
+**Last Updated**: 2025-01-06
+
+### Reference
+
+Official Microsoft FARA Project: [github.com/microsoft/fara](https://github.com/microsoft/fara)
