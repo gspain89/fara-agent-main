@@ -33,10 +33,7 @@
   - [Magentic-UI Agent](#magentic-ui-agent)
 - [Project Structure](#project-structure)
 - [Documentation](#documentation)
-- [Troubleshooting Journey](#troubleshooting-journey)
-- [Limitations](#limitations)
 - [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -287,30 +284,6 @@ fara-agent-main/
 
 ---
 
-## Troubleshooting Journey
-
-> **Note**: This section documents challenges encountered during development.
-> All issues are now resolved. See [Magentic-UI Usage Guide](./docs/USAGE_GUIDE_MAGENTIC_UI.md) for details.
-
-Key problems solved during development:
-
-### 1. Blank Screenshot Issue
-**Symptom**: Model couldn't see screenshots, responded with "blank image"
-**Cause**: LM Studio `max_tokens` limited to 4000, truncating image data
-**Solution**: Increased LM Studio `max_tokens` to **15000**
-
-### 2. Client Disconnected Messages
-**Symptom**: Repeated "Client disconnected" messages during Vision requests
-**Cause**: `model_call_timeout: int = 20` (20 seconds) shorter than Vision processing time (15-20 seconds)
-**Solution**: Increased `model_call_timeout` in `_fara_web_surfer.py` to **60 seconds**
-
-### 3. Proxy Unnecessary
-**Attempt**: Implemented middleware proxy for tool calling
-**Conclusion**: Magentic-UI FARA agent directly parses `<tool_call>` XML format
-**Solution**: Direct connection to LM Studio (removed proxy)
-
----
-
 ## Limitations and Use Cases
 
 FARA-7B uses a Vision-based approach. **Capabilities vary by execution environment**:
@@ -380,20 +353,6 @@ More troubleshooting solutions in [Usage Guides](./docs/USAGE_GUIDE_%20Playwrigh
 
 ---
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### How to Contribute
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
 ## License
 
 This project follows the licenses of the following open-source projects:
@@ -406,33 +365,8 @@ This project follows the licenses of the following open-source projects:
 
 MIT License
 
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 ---
 
-## Star History
-
-If you find this project useful, please consider giving it a star! ⭐
-
----
 
 ## Acknowledgments
 
@@ -441,9 +375,6 @@ If you find this project useful, please consider giving it a star! ⭐
 - **LM Studio & Ollama teams** for user-friendly local LLM platforms
 
 ---
-
-**Project Created**: 2025-12-15
-**Last Updated**: 2025-01-06
 
 ### Reference
 
